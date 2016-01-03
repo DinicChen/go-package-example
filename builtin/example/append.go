@@ -13,4 +13,8 @@ func main() {
 
 	d := append(a, 6)
 	fmt.Println("d ==", d[:cap(d)]) // d == [1 2 3 6 5 6 0 0 0 0]
+
+	e := []int{7, 8}
+	f := append(d, e...)
+	fmt.Println("f ==", f[:cap(f)]) // f == [1 2 3 6 5 6 7 8 0 0]
 }
