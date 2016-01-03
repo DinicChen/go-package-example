@@ -8,9 +8,8 @@
 // object, creating another object (Reader or Writer) that also implements the
 // interface but provides buffering and some help for textual I/O.
 
-// bufio 包实现了带缓存的I/O操作.
-// 它封装了一个io.Reader或者io.Writer对象，另外创建了一个对象
-// （Reader或者Writer），这个对象也实现了一个接口，并提供缓冲和文档读写的帮助。
+// bufio包实现了带缓存的I/O操作。
+// 它封装了一个io.Reader或者io.Writer对象，创建成另一个对象（Reader或者Writer），这个对象也实现了这个接口，并提供缓冲和文档读写的帮助。
 package bufio
 
 const (
@@ -36,8 +35,7 @@ var (
 
 // ScanBytes is a split function for a Scanner that returns each byte as a token.
 
-// ScanBytes是用于Scanner类型的分割函数（符合SplitFunc），
-// 本函数会将每个字节作为一个token返回。
+// ScanBytes是用于Scanner类型的分割函数（符合SplitFunc），将每个字节作为一个token返回。
 func ScanBytes(data []byte, atEOF bool) (advance int, token []byte, err error)
 
 // ScanLines is a split function for a Scanner that returns each line of text,
@@ -46,9 +44,9 @@ func ScanBytes(data []byte, atEOF bool) (advance int, token []byte, err error)
 // newline. In regular expression notation, it is `\r?\n`. The last non-empty line
 // of input will be returned even if it has no newline.
 
-// ScanLines是用于Scanner类型的分割函数（符合SplitFunc），
-// 本函数会将每一行文本去掉末尾的换行标记作为一个token返回。
-// 返回的行可以是空字符串。换行标记为一个可选的回车后跟一个必选的换行符。
+// ScanLines是用于Scanner类型的分割函数（符合SplitFunc），将每一行文本去掉末尾的换行标记作为一个token返回。
+// 返回的行可以是空字符串。
+// 换行标记为一个可选的回车后跟一个必选的换行符。
 // 最后一行即使没有换行符也会作为一个token返回。
 func ScanLines(data []byte, atEOF bool) (advance int, token []byte, err error)
 
@@ -59,27 +57,25 @@ func ScanLines(data []byte, atEOF bool) (advance int, token []byte, err error)
 // it impossible for the client to distinguish correctly encoded replacement runes
 // from encoding errors.
 
-// ScanRunes是用于Scanner类型的分割函数（符合SplitFunc），
-// 本函数会将每个utf-8编码的unicode码值作为一个token返回。
-// 本函数返回的rune序列和range一个字符串的输出rune序列相同。
-// 错误的utf-8编码会翻译为U+FFFD = "\xef\xbf\xbd"，
-// 但只会消耗一个字节。调用者无法区分正确编码的rune和错误编码的rune。
+// ScanRunes是用于Scanner类型的分割函数（符合SplitFunc），将每个utf-8编码的unicode码值作为一个token返回。
+// 返回的rune序列和range一个字符串的输出rune序列相同。
+// 错误的utf-8编码会翻译为U+FFFD = "\xef\xbf\xbd"，但只会消耗一个字节。
+// 调用者无法区分正确编码的rune和错误编码的rune。
 func ScanRunes(data []byte, atEOF bool) (advance int, token []byte, err error)
 
 // ScanWords is a split function for a Scanner that returns each space-separated
 // word of text, with surrounding spaces deleted. It will never return an empty
 // string. The definition of space is set by unicode.IsSpace.
 
-// ScanWords是用于Scanner类型的分割函数（符合SplitFunc），
-// 本函数会将每一行文本去掉末尾的换行标记作为一个token返回。
-// 返回的行可以是空字符串。换行标记为一个可选的回车后跟一个必选的换行符。
-// 最后一行即使没有换行符也会作为一个token返回。
+// ScanWords是用于Scanner类型的分割函数（符合SplitFunc），将每个被空白分割的单词作为一个token返回。
+// 返回的行可以是空字符串。
+// 空白符合unicode.IsSpace定义。
 func ScanWords(data []byte, atEOF bool) (advance int, token []byte, err error)
 
 // ReadWriter stores pointers to a Reader and a Writer. It implements
 // io.ReadWriter.
 
-// ReadWriter存储输入输出指针。 它实现了io.ReadWriter。
+// ReadWriter存储输入输出指针。它实现了io.ReadWriter。
 type ReadWriter struct {
 	*Reader
 	*Writer
@@ -99,15 +95,15 @@ type Reader struct {
 
 // NewReader returns a new Reader whose buffer has the default size.
 
-// NewReader返回一个新的Reader，这个Reader的大小是默认的大小。
+// NewReader返回一个新的Reader，这个Reader的缓存大小是默认大小。
 func NewReader(rd io.Reader) *Reader
 
 // NewReaderSize returns a new Reader whose buffer has at least the specified size.
 // If the argument io.Reader is already a Reader with large enough size, it returns
 // the underlying Reader.
 
-// NewReaderSize返回了一个新的读取器，这个读取器的缓存大小至少大于制定的大小。
-// 如果io.Reader参数已经是一个有足够大缓存的读取器，它就会返回这个Reader了。
+// NewReaderSize返回了一个新的Reader，这个Reader的缓存大小至少大于指定的大小。
+// 如果io.Reader参数已经是一个有足够大缓存的Reader，它就会返回这个底层Reader。
 func NewReaderSize(rd io.Reader, size int) *Reader
 
 // Buffered returns the number of bytes that can be read from the current buffer.
@@ -120,15 +116,15 @@ func (b *Reader) Buffered() int
 // an error explaining why the read is short. The error is ErrBufferFull if n is
 // larger than b's buffer size.
 
-// Peek返回没有读取的下n个字节。在下个读取的调用前，字节是不可见的。如果Peek返回的字节数少于n，
-// 它一定会解释为什么读取的字节数段了。如果n比b的缓冲大小更大，返回的错误是ErrBufferFull。
+// Peek读取指定字节数的数据，这些被读取的数据不会从缓冲区中清除。在下次读取之后，本次返回的字节切片会失效。
+// 如果返回的字节数不足n字节，则会同时返回一个错误说明原因。如果n比缓冲区要大，则错误为ErrBufferFull。
 func (b *Reader) Peek(n int) ([]byte, error)
 
 // Read reads data into p. It returns the number of bytes read into p. It calls
 // Read at most once on the underlying Reader, hence n may be less than len(p). At
 // EOF, the count will be zero and err will be io.EOF.
 
-// Read读取数据到p。 返回读取到p的字节数。
+// Read读取数据到p。返回读取到p的字节数。
 // 底层读取最多只会调用一次Read，因此n会小于len(p)。
 // 在EOF之后，调用这个函数返回的会是0和io.Eof。
 func (b *Reader) Read(p []byte) (n int, err error)
@@ -136,7 +132,7 @@ func (b *Reader) Read(p []byte) (n int, err error)
 // ReadByte reads and returns a single byte. If no byte is available, returns an
 // error.
 
-// ReadByte读取和回复一个单字节。
+// ReadByte读取并返回一个单字节。
 // 如果没有字节可以读取，返回一个error。
 func (b *Reader) ReadByte() (c byte, err error)
 
@@ -147,10 +143,9 @@ func (b *Reader) ReadByte() (c byte, err error)
 // and only if the returned data does not end in delim. For simple uses, a Scanner
 // may be more convenient.
 
-// ReadBytes读取输入到第一次终止符发生的时候，返回的slice包含从当前到终止符的内容（包括终止符）。
-// 如果ReadBytes在遇到终止符之前就捕获到一个错误，它就会返回遇到错误之前已经读取的数据，和这个捕获
-// 到的错误（经常是
-// io.EOF）。当返回的数据没有以终止符结束的时候，ReadBytes返回err != nil。
+// ReadBytes读取输入到第一次终止符发生的时候，返回的切片包含从当前到终止符的内容（包括终止符）。
+// 如果ReadBytes在遇到终止符之前就捕获到一个错误，它就会返回遇到错误之前已经读取的数据，和这个捕获到的错误（经常是io.EOF）。
+// 当返回的数据没有以终止符结束的时候，ReadBytes返回err才不为空值。
 // 对于简单的使用，或许 Scanner 更方便。
 func (b *Reader) ReadBytes(delim byte) (line []byte, err error)
 
@@ -187,8 +182,8 @@ func (b *Reader) ReadLine() (line []byte, isPrefix bool, err error)
 // its size in bytes. If the encoded rune is invalid, it consumes one byte and
 // returns unicode.ReplacementChar (U+FFFD) with a size of 1.
 
-// ReadRune读取单个的UTF-8编码的Unicode字节，并且返回rune和它的字节大小。
-// 如果编码的rune是可见的，它消耗一个字节并且返回1字节的unicode.ReplacementChar (U+FFFD)。
+// ReadRune读取一个UTF-8编码的字符，并将其对应的Unicode码和所占字节数返回。
+// 如果编码错误，ReadRune只读取一个字节并返回unicode.ReplacementChar(U+FFFD)和长度1。
 func (b *Reader) ReadRune() (r rune, size int, err error)
 
 // ReadSlice reads until the first occurrence of delim in the input, returning a
@@ -200,12 +195,12 @@ func (b *Reader) ReadRune() (r rune, size int, err error)
 // operation, most clients should use ReadBytes or ReadString instead. ReadSlice
 // returns err != nil if and only if line does not end in delim.
 
-// ReadSlice从输入中读取，直到遇到第一个终止符为止，返回一个指向缓存中字节的slice。
-// 在下次调用的时候这些字节就是已经被读取了。如果ReadSlice在找到终止符之前遇到了error，
-// 它就会返回缓存中所有的数据和错误本身（经常是 io.EOF）。
+// ReadSlice从输入中读取数据，直到遇到第一个终止符为止，返回一个指向缓存中字节的slice。
+// 下次读取数据时返回的切片会失效。
+// 如果在找到终止符之前遇到了error，就返回缓存中所有的数据和错误本身（经常是io.EOF）。
 // 如果在终止符之前缓存已经被充满了，ReadSlice会返回ErrBufferFull错误。
 // 由于ReadSlice返回的数据会被下次的I/O操作重写，因此许多的客户端会选择使用ReadBytes或者ReadString代替。
-// 当且仅当数据没有以终止符结束的时候，ReadSlice返回err != nil
+// 当且仅当数据没有以终止符结束的时候，ReadSlice返回非空err。
 func (b *Reader) ReadSlice(delim byte) (line []byte, err error)
 
 // ReadString reads until the first occurrence of delim in the input, returning a
@@ -215,10 +210,9 @@ func (b *Reader) ReadSlice(delim byte) (line []byte, err error)
 // and only if the returned data does not end in delim. For simple uses, a Scanner
 // may be more convenient.
 
-// ReadString读取输入到第一次终止符发生的时候，返回的string包含从当前到终止符的内容（包括终止符）。
-// 如果ReadString在遇到终止符之前就捕获到一个错误，它就会返回遇到错误之前已经读取的数据，和这个捕获
-// 到的错误（经常是
-// io.EOF）。当返回的数据没有以终止符结束的时候，ReadString返回err != nil。
+// ReadString从输入中读取数据，直到遇到第一个终止符为止，返回的string包含从当前到终止符的内容（包括终止符）。
+// 如果ReadString在遇到终止符之前就捕获到一个错误，它就会返回遇到错误之前已经读取的数据和这个捕获到的错误（经常是io.EOF）。
+// 当返回的数据没有以终止符结束的时候，ReadString返回非空err。
 // 对于简单的使用，或许 Scanner 更方便。
 func (b *Reader) ReadString(delim byte) (line string, err error)
 
@@ -239,9 +233,8 @@ func (b *Reader) UnreadByte() error
 // stricter than UnreadByte, which will unread the last byte from any read
 // operation.)
 
-// UnreadRune将最后一个rune设置为未读。如果最新的在buffer上的操作不是ReadRune，则UnreadRune
-// 就返回一个error。（在这个角度上看，这个函数比UnreadByte更严格，UnreadByte会将最后一个读取
-// 的byte设置为未读。）
+// UnreadRune将最后一个rune设置为未读。如果最新的在buffer上的操作不是ReadRune，则UnreadRune就返回一个error。
+// （在这个角度上看，这个函数比UnreadByte更严格，UnreadByte会将最后一个读取的byte设置为未读。）
 func (b *Reader) UnreadRune() error
 
 // WriteTo implements io.WriterTo.
@@ -365,24 +358,23 @@ type SplitFunc func(data []byte, atEOF bool) (advance int, token []byte, err err
 // method to guarantee all data has been forwarded to the underlying io.Writer.
 
 // Writer实现了io.Writer对象的缓存。
-// 如果在写数据到Writer的时候出现了一个错误，不会再有数据被写进来了，
-// 并且所有随后的写操作都会返回error。当所有数据被写入后，客户端应调用 Flush
-// 方法以确保所有数据已转为基本的 io.Writer
+// 如果在写数据到Writer的时候出现了一个错误，不会再有数据被写进来了，并且所有随后的写操作都会返回error。
+// 当所有数据被写入后，客户端应调用Flush方法以确保所有数据已转入底层的io.Writer
 type Writer struct {
 	// contains filtered or unexported fields
 }
 
 // NewWriter returns a new Writer whose buffer has the default size.
 
-// NewWriter返回一个新的，有默认尺寸缓存的Writer。
+// NewWriter返回一个新的Writer，这个Writer的缓存大小是默认大小。
 func NewWriter(w io.Writer) *Writer
 
 // NewWriterSize returns a new Writer whose buffer has at least the specified size.
 // If the argument io.Writer is already a Writer with large enough size, it returns
 // the underlying Writer.
 
-// NewWriterSize返回一个新的Writer，它的缓存一定大于指定的size参数。
-// 如果io.Writer参数已经是足够大的有缓存的Writer了，函数就会返回它底层的Writer。
+// NewWriterSize返回了一个新的Reader，这个Writer的缓存大小至少大于指定的大小。
+// 如果io.Writer参数已经是一个有足够大缓存的Writer，它就会返回这个底层Writer。
 func NewWriterSize(w io.Writer, size int) *Writer
 
 // Available returns how many bytes are unused in the buffer.
@@ -414,8 +406,8 @@ func (b *Writer) Reset(w io.Writer)
 // written. If nn < len(p), it also returns an error explaining why the write is
 // short.
 
-// Writer将p中的内容写入到缓存中。 它返回写入的字节数。 如果nn < len(p),
-// 它也会返回错误，用于解释为什么写入的数据会短缺。
+// Writer将p中的内容写入到缓存中。它返回写入的字节数。
+// 如果nn < len(p)，它也会返回错误，用于解释为什么写入的数据会短缺。
 func (b *Writer) Write(p []byte) (nn int, err error)
 
 // WriteByte writes a single byte.
